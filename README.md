@@ -1,4 +1,4 @@
-Currently run.sh it set up to Generates 10,000 Poisson random variables using the Binary Search algorithm and displays histograms for λ = 30, 650, and 1800.
+Currently `run.sh` is set up to Generates 10,000 Poisson random variables using the Binary Search algorithm and displays histograms for λ = 30, 650, and 1800.
 
 ### Prerequisites
 
