@@ -1,0 +1,3 @@
+/home/adam/git/computer-simulations/build/CMakeFiles/main.dir
+/home/adam/git/computer-simulations/build/CMakeFiles/edit_cache.dir
+/home/adam/git/computer-simulations/build/CMakeFiles/rebuild_cache.dir
