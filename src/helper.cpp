@@ -32,18 +32,20 @@ void createHistPlot(std::vector<double> y, double bins, std::string xlabel, std:
   plt::xlabel(xlabel);
   plt::ylabel(ylabel);
   plt::title(title);
+  plt::show();
 }
 
-void createBarPlot(std::vector<double> x, std::vector<double> y, std::string xlabel, std::string ylabel,
+void createBarPlot(std::vector<long double> x, std::vector<long double> y, std::string xlabel, std::string ylabel,
                    std::string title) {
 
   plt::bar(x, y);
   plt::xlabel(xlabel);
   plt::ylabel(ylabel);
   plt::title(title);
+  plt::show();
 }
 
-void createMultiPlot(std::vector<std::vector<double>> vectorX, std::vector<std::vector<double>> vectorY,
+void createMultiPlot(std::vector<std::vector<long double>> vectorX, std::vector<std::vector<long double>> vectorY,
                      std::vector<std::string> xlabel, std::vector<std::string> ylabel, std::vector<std::string> title) {
 
   int size = vectorX.size();
