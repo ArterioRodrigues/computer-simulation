@@ -21,7 +21,8 @@ pip3 install matplotlib numpy
 ```
 
 Build and Run
-Can run the run.sh file or build with cmake.
+
+Can run the `run.sh` file or build with cmake.
 ```bash
 mkdir build
 cd build
