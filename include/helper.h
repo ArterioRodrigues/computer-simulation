@@ -15,6 +15,8 @@ void createHistPlot(std::vector<double> y, double bins = 10, std::string xlabel 
                     std::string title = "");
 void createBarPlot(std::vector<double> x, std::vector<double> y, std::string xlabel = "", std::string ylabel = "",
                    std::string title = "");
+void createMultiPlot(std::vector<std::vector<double>> vectorX, std::vector<std::vector<double>> y,
+                     std::vector<std::string> xlabel, std::vector<std::string> ylabel, std::vector<std::string> title);
 double transformationMethodPoisson(double lambda, std::optional<double> randomValue);
 double binarySearchPoisson(double lambda, std::optional<double> randomValue);
 double binarySearchPoissonLog(double lambda, std::optional<double> randomValue);

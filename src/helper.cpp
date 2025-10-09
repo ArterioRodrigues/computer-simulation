@@ -1,4 +1,5 @@
 #include "helper.h"
+#include "matplotlibcpp.h"
 
 int randomNumberGenerator(int start, int end) {
 
@@ -24,15 +25,13 @@ void createScatterPlot(std::vector<double> x, std::vector<double> y, std::string
   plt::xlabel(xlabel);
   plt::ylabel(ylabel);
   plt::title(title);
-  plt::show();
 }
 
 void createHistPlot(std::vector<double> y, double bins, std::string xlabel, std::string ylabel, std::string title) {
-  plt::hist(y, bins);
+  plt::hist(y, bins, "blue", 1.0);
   plt::xlabel(xlabel);
   plt::ylabel(ylabel);
   plt::title(title);
-  plt::show();
 }
 
 void createBarPlot(std::vector<double> x, std::vector<double> y, std::string xlabel, std::string ylabel,
@@ -42,9 +41,22 @@ void createBarPlot(std::vector<double> x, std::vector<double> y, std::string xla
   plt::xlabel(xlabel);
   plt::ylabel(ylabel);
   plt::title(title);
-  plt::show();
 }
 
+void createMultiPlot(std::vector<std::vector<double>> vectorX, std::vector<std::vector<double>> vectorY,
+                     std::vector<std::string> xlabel, std::vector<std::string> ylabel, std::vector<std::string> title) {
+
+  int size = vectorX.size();
+  for (int i = 0; i < size; i++) {
+    plt::subplot(1, 3, i + 1);
+    plt::bar(vectorX[i], vectorY[i]);
+    plt::xlabel(xlabel[i]);
+    plt::ylabel(ylabel[i]);
+    plt::title(title[i]);
+  }
+
+  plt::tight_layout();
+}
 double logSumExp(double logA, double logB) {
   if (logA > logB) {
     return logA + log(1.0 + exp(logB - logA));
