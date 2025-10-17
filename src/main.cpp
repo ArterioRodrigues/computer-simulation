@@ -17,7 +17,7 @@ int main() {
   std::vector<double> transaformationY;
   std::vector<long double> poissonX;
   std::vector<long double> poissonY;
-  std::vector<double> lambdas = {30, 650, 800};
+  std::vector<double> lambdas = {1800};
   double randomUniformNumber;
 
   long nRows = 1;
