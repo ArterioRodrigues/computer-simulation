@@ -2,7 +2,7 @@
 
 int generateM(double lambda, double timeInterval) {
   double randomNumber = randomFloatGenerator(0, 1);
-  return transformationMethodPoisson(lambda * timeInterval, randomNumber);
+  return transformationMethodPoissonLog(lambda * timeInterval, randomNumber);
 }
 
 std::vector<double> retrospectiveSimulation(double timeInterval, double numberOfReplication, double initalOccupancy,
@@ -18,10 +18,8 @@ std::vector<double> retrospectiveSimulation(double timeInterval, double numberOf
 
   for (int i = 0; i < numberOfReplication; i++) {
     int M = generateM(lambdaTotal, timeInterval);
-
-    double time = 0.0;
+  
     int occupancy = initalOccupancy;
-
     int client3Rides = 0;
     int client1Penalties = 0;
     int client2Penalties = 0;

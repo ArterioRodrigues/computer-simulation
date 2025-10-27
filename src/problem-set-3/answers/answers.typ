@@ -38,8 +38,6 @@ double arrivalTime = randomExponentialNumberGenerator(1.0 / lambda);
 double client1ArrivalTime = randomExponentialNumberGenerator(1.0 / client1Rate);
 double client2ArrivalTime = randomExponentialNumberGenerator(1.0 / client2Rate);
 double client3ArrivalTime = randomExponentialNumberGenerator(1.0 / client3Rate);
-
-// more code
 ```
 
 We use discrete event simulation tracking four event types: bike arrivals and three client requests. Interarrival times are generated using 
@@ -58,7 +56,7 @@ accuracy of the model didn't show much improvment after this point.
 === Problem 1b 
 === i)
 
-If we merge all the poisson processes we get a superposition of independent Poisson processes with rates
+By the *Superposition Theorem*- If we merge all the poisson processes we get a superposition of independent Poisson processes with rates
 $lambda_"Total"$ = $lambda + mu_1 + mu_2 + mu_3 + lambda = 6 + 3 +1 +4 = 14$
 
 The total number of events in the distribution $M$ would be
@@ -85,7 +83,7 @@ double generateM(double lambda, double timeInterval) {
 === iii)
 The full code for this can be found #link("")[HERE]
 
-Given that an event occurred in the merged process the probability it's of each type is:
+By *Decomposition Theorem* - Given that an event occurred in the merged process the probability it's of each type is:
 
 - P(Arrival | event) = $lambda/lambda_"Total" = 6/14$
 - P(Class 1| event) = $mu_1/lambda_"Total" = 3/14$
@@ -115,4 +113,20 @@ Then we can change our code to choose a random event based on these probabilties
       int M = generateM(lambdaTotal, timeInterval);
 ```
 
-Again we choose to use 1000 replications since the estimation did improve much after this point.
+Again we choose to use 10,000 replications since the estimation did improve much after this point.
+
+=== Problem 1c)
+
+Both simulation methods produced nearly identical results being $dollar$551.69 with 10,000 replications.
+
+The Discrete Event Simulation \ 
+Tracked each event chronologically with exact timestamps. It stores these events and removed event that have happens and 
+add new timestamps to the state. This process is more natural as it mirrors the actually process.
+
+The Retrospective Simulation \ 
+This was simpler to implement with a constant M events. Using superposition theorem we where able to merge the Poisson processes
+and using decomposition theorem randomly assign event types based on the proportional rates. 
+
+For time comparision the Retrospective Simulation ran slower while the Discrete Simulation was faster. \
+Discrete Simulation Time: 1886ms \ 
+Retrospective Simulation Time: 11292ms
