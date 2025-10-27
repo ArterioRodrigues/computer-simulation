@@ -5,9 +5,11 @@
 #include <optional>
 #include <random>
 #include <vector>
+#include <numeric>
 namespace plt = matplotlibcpp;
 
 int randomNumberGenerator(int start, int end);
+int weightedRandomGenerator(const std::vector<double>& weights);
 double randomExponentialNumberGenerator(double scale = 1.0);
 
 float randomFloatGenerator(float start, float end);
@@ -25,7 +27,34 @@ double transformationMethodPoisson(double lambda, std::optional<double> randomVa
 double binarySearchPoisson(double lambda, std::optional<double> randomValue);
 double binarySearchPoissonLog(double lambda, std::optional<double> randomValue);
 double logSumExp(double logA, double logB);
+
 std::vector<double> discreteEventSimulation(double timeInterval, double numberOfReplication, double initalOccupancy, double lambda = 6,
                                double client1Rate = 3, double client2Rate = 1, double client3Rate = 4, float client1Fee = 0.5,
                                float client2Fee = 0.1, float client3Fee = 1.25, float client1PenaltyRate = 1.0,
                                float client2PenaltyRate = 0.25);
+
+std::vector<double> retrospectiveSimulation(double timeInterval, double numberOfReplication, double initalOccupancy, double lambda = 6,
+                               double client1Rate = 3, double client2Rate = 1, double client3Rate = 4, float client1Fee = 0.5,
+                               float client2Fee = 0.1, float client3Fee = 1.25, float client1PenaltyRate = 1.0,
+                               float client2PenaltyRate = 0.25);
+
+
+enum EventType{
+  arrival,
+  client1,
+  client2,
+  client3,
+};
+
+struct Events {
+  double arrival;
+  double client1;
+  double client2;
+  double client3;
+};
+struct EventResult {
+  double time;
+  EventType type;
+};
+
+EventResult findNextEvent(const Events &events);

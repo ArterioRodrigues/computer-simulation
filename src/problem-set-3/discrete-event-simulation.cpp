@@ -1,44 +1,4 @@
 #include "helper.h"
-#include <numeric>
-
-enum Client {
-  arrival,
-  client1,
-  client2,
-  client3,
-};
-
-struct Events {
-  double arrival;
-  double client1;
-  double client2;
-  double client3;
-};
-struct EventResult {
-  double time;
-  Client type;
-};
-
-EventResult findNextEvent(const Events &events) {
-  EventResult result;
-  result.time = events.arrival;
-  result.type = arrival;
-
-  if (events.client1 < result.time) {
-    result.time = events.client1;
-    result.type = Client::client1;
-  }
-  if (events.client2 < result.time) {
-    result.time = events.client2;
-    result.type = Client::client2;
-  }
-  if (events.client3 < result.time) {
-    result.time = events.client3;
-    result.type = Client::client3;
-  }
-
-  return result;
-}
 
 std::vector<double> discreteEventSimulation(double timeInterval, double numberOfReplication, double initalOccupancy, double lambda,
                                             double client1Rate, double client2Rate, double client3Rate, float client1Fee,
@@ -77,17 +37,17 @@ std::vector<double> discreteEventSimulation(double timeInterval, double numberOf
 
       time = nextEvent.time;
 
-      if (nextEvent.type == Client::arrival) {
+      if (nextEvent.type == EventType::arrival) {
         occupancy++;
         arrivalTime = time + randomExponentialNumberGenerator(1.0 / lambda);
-      } else if (nextEvent.type == Client::client1) {
+      } else if (nextEvent.type == EventType::client1) {
         if (occupancy > 0)
           occupancy--;
         else
           client1Penalties++;
 
         client1ArrivalTime = time + randomExponentialNumberGenerator(1.0 / client1Rate);
-      } else if (nextEvent.type == Client::client2) {
+      } else if (nextEvent.type == EventType::client2) {
         if (occupancy > 0)
           occupancy--;
         else
@@ -96,7 +56,7 @@ std::vector<double> discreteEventSimulation(double timeInterval, double numberOf
         client2ArrivalTime = time + randomExponentialNumberGenerator(1.0 / client2Rate);
       }
 
-      else if (nextEvent.type == Client::client3) {
+      else if (nextEvent.type == EventType::client3) {
         if (occupancy > 0) {
           occupancy--;
           client3Rides++;

@@ -1,10 +1,10 @@
 #include "helper.h"
 int main() {
-  int numberOfReplication = 1000;
+  int numberOfReplication = 10000;
   int time = 120;
   int initalOccupancy = 10;
 
-  std::vector<double> results = discreteEventSimulation(time,                // 120
+  std::vector<double> results = retrospectiveSimulation(time,                // 120
                                                         numberOfReplication, // 1000
                                                         initalOccupancy,     // 10
                                                         6,                   // lambda (bike arrival rate)
@@ -22,8 +22,6 @@ int main() {
   double mean = sum / numberOfReplication;
 
   std::cout << "Estimated Net Profit: $" << mean << std::endl;
-
-  createHistPlot(results);
 
   return 0;
 }
