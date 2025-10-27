@@ -1,5 +1,6 @@
 #include "helper.h"
 #include "matplotlibcpp.h"
+#include <random>
 
 int randomNumberGenerator(int start, int end) {
 
@@ -10,6 +11,14 @@ int randomNumberGenerator(int start, int end) {
   return dist(eng);
 }
 
+double randomExponentialNumberGenerator(double scale) {
+
+  std::random_device randomDevice;
+  std::default_random_engine eng(randomDevice());
+  std::exponential_distribution<double> dist(1.0/scale);
+
+  return dist(eng);
+}
 float randomFloatGenerator(float start, float end) {
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   static std::default_random_engine generator(seed);
