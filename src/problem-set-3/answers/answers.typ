@@ -1,3 +1,6 @@
+#set page(margin: 1in)
+#set par(justify: true)
+#set text(size: 11pt)
 #show link:underline
 #show raw: it => block(
   fill: luma(240), 
@@ -5,8 +8,18 @@
   radius: 5pt,   
   it 
 )
-== Problem Set 3
 
+* Team *  \
+Rishi Bhatt \
+Michelle Cheng \
+Arterio Rodrigues \
+Nisagra Kadam \
+
+#align(
+  center
+)[
+== Problem Set 3 Solution
+]
 === Problem 1a)
 The full code for this can be found #link("https://github.com/ArterioRodrigues/computer-simulation/blob/03-problem-set-3/src/problem-set-3/discrete-event-simulation.cpp")[HERE]
 
@@ -55,7 +68,7 @@ accuracy of the model didn't show much improvment after this point.
 
 === Problem 1b 
 === i)
-
+The full code can be found #link("https://github.com/ArterioRodrigues/computer-simulation/blob/03-problem-set-3/src/problem-set-3/retrospective-simulation.cpp")[HERE] \ 
 By the *Superposition Theorem*- If we merge all the poisson processes we get a superposition of independent Poisson processes with rates
 $lambda_"Total"$ = $lambda + mu_1 + mu_2 + mu_3 + lambda = 6 + 3 +1 +4 = 14$
 
@@ -81,8 +94,6 @@ double generateM(double lambda, double timeInterval) {
 ```
 
 === iii)
-The full code for this can be found #link("")[HERE]
-
 By *Decomposition Theorem* - Given that an event occurred in the merged process the probability it's of each type is:
 
 - P(Arrival | event) = $lambda/lambda_"Total" = 6/14$
@@ -130,3 +141,101 @@ and using decomposition theorem randomly assign event types based on the proport
 For time comparision the Retrospective Simulation ran slower while the Discrete Simulation was faster. \
 Discrete Simulation Time: 1886ms \ 
 Retrospective Simulation Time: 11292ms
+
+#pagebreak()
+=== Problem 2a)
+
+The variables include queue length and server's status (busy/free). The residual clocks keep track of the next arrivals
+and the departures.
+
+=== Problem 2b)
+
+To estimate $theta$ by simulating the queue length using discrete event simulation
+We track the queue length over time and compute the time-averaged queue length: $theta = (1/T) integral^t_0 N*Q(s) "ds"$
+This is implemented by accumulating the area under the queue length curve.
+
+```py
+import numpy as np
+
+lam = 1.0
+shape, rate = 3, 4
+T_end = 100000
+
+time = 0.0
+queueLength = 0
+server_busy = False
+
+next_arrival = np.random.exponential(1 / lam)
+next_departure = np.inf  # no departure is scheduled yet
+
+area_queue = 0.0
+last_event_time = 0.0
+
+while time < T_end:
+    nextEvent = min(next_arrival, next_departure)
+
+    area_queue += queueLength * (nextEvent - last_event_time)
+    last_event_time = nextEvent
+    time = nextEvent
+
+    if nextEvent == next_arrival: #arrival is next
+        next_arrival = time + np.random.exponential(1 / lam)
+
+        if not server_busy:
+            server_busy = True
+            service_time = np.random.gamma(shape, 1 / rate)
+            next_departure = time + service_time
+        else:
+            queueLength += 1
+
+    else:  # departure is next
+        if queueLength > 0:
+            queueLength -= 1
+            service_time = np.random.gamma(shape, 1 / rate)
+            next_departure = time + service_time
+        else:
+            server_busy = False
+            next_departure = np.inf
+
+
+theta_est = area_queue / T_end
+print(f"Estimated θ ≈ {theta_est:.4f}")
+
+
+rho = lam * (shape / rate)
+E_S2 = shape * (shape + 1) / rate**2
+theta_theoretical = lam**2 * E_S2 / (2 * (1 - rho))
+print(f"Theoretical θ = {theta_theoretical:.4f}")
+```
+=== Problem 3a)
+
+The state is ${W_n}$, the waiting time of customer $n$ (not $V_n$). This represents the workload in the system just before customer $n$ enters service.
+
+The filtration $cal(F)_n = sigma(W_1, S_1, A_1, W_2, S_2, A_2, ..., W_n, S_n, A_n)$ contains all information up to and including the $n$th customer's arrival and service time. This makes ${W_n}$ a Markov process because:
+
+Given $W_n$ (current waiting time), the next state $W_(n+1)$ depends only on $W_n$ and the new i.i.d. pair $(A_(n+1), S_(n+1))$ via Lindley's equation:
+  $ W_(n+1) = max(0, W_n + S_n - A_(n+1)) $
+
+The future evolution is independent of the past history $W_1, W_2, ..., W_(n-1)$ given the current state $W_n$
+The state space is continuous: $W_n in [0, infinity)$
+
+=== Problem 3b)
+Instead of tracking queue length over continuous time, we simulate the sojourn time $X_n = W_n + S_n$ for each customer $n$ using Lindley's recursion:
+- $W_(n+1) = max(0, W_n + S_n - A_(n+1))$
+- $X_n = W_n + S_n$
+
+*Procedure:*
+
++ Initialize $W_0 = 0$ (system starts empty)
+
++ For $n = 1, 2, ..., N$:
+  - Generate inter-arrival time $A_n tilde "Exp"(lambda)$ and service time $S_n tilde Gamma(3, 4)$
+  - Compute $W_(n+1) = max(0, W_n + S_n - A_n)$
+  - Record sojourn time $X_n = W_n + S_n$
+
++ Estimate the stationary mean sojourn time: $overline(X) approx 1/N sum_(n=1)^N X_n$
+
++ Use Little's Law to obtain $theta$: since $theta + rho = lambda overline(X)$, we have
+  $ hat(theta) = lambda overline(X) - rho $
+
+ This Petri Net/Lindley approach is often more efficient computationally since we only process events at customer departures rather than tracking continuous-time queue dynamics.o covert these averaged soujourn times into the length of the average queue.
