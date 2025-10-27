@@ -1,76 +1,52 @@
 #include "helper.h"
-#include "matplotlibcpp.h"
-#include "poisson.h"
 #include "timer.h"
-#include <algorithm>
-#include <cmath>
-#include <string>
-#include <vector>
-
-double ITERATION = 10000;
-double BINS = 100;
-
 int main() {
-  std::vector<double> binarySearchX;
-  std::vector<double> binarySearchY;
-  std::vector<double> transaformationX;
-  std::vector<double> transaformationY;
-  std::vector<long double> poissonX;
-  std::vector<long double> poissonY;
-  std::vector<double> lambdas = {30, 650, 800};
-  double randomUniformNumber;
-
-  long nRows = 1;
-  long nCols = 3;
-  long nPlot = 1;
-
+  int numberOfReplication = 10000;
+  int time = 120;
+  int initalOccupancy = 10;
+ 
   Timer timer;
-  for (auto lambda : lambdas) {
-    std::cout << "\n=== Lambda = " << lambda << " ===" << std::endl;
+  timer.start();
+  std::vector<double> results = retrospectiveSimulation(time,                // 120
+                                                        numberOfReplication, // 1000
+                                                        initalOccupancy,     // 10
+                                                        6,                   // lambda (bike arrival rate)
+                                                        3,                   // client1Rate (mu1)
+                                                        1,                   // client2Rate (mu2)
+                                                        4,                   // client3Rate (mu3)
+                                                        0.5,                 // client1Fee (K1)
+                                                        0.1,                 // client2Fee (K2)
+                                                        1.25,                // client3Fee (K3)
+                                                        1.0,                 // client1PenaltyRate (c1)
+                                                        0.25                 // client2PenaltyRate (c2)
+  );
 
-    // Transformation Poisson Function
-    timer.start();
-    for (int i = 0; i < ITERATION; i++) {
-      randomUniformNumber = randomFloatGenerator(0, 1);
-      transaformationY.push_back(transformationMethodPoisson(lambda, randomUniformNumber));
-    }
-    timer.end();
-    std::cout << "Transformation Search Method: " << timer.result() << "ms" << std::endl;
+  double sum = std::accumulate(results.begin(), results.end(), 0.0);
+  double mean = sum / numberOfReplication;
+  timer.end();
+  std::cout << "Estimated Net Profit: $" << mean << std::endl;
+  std::cout << "Time: " << timer.result()<< std::endl;
 
-    // Binary Search Poisson Function
-    timer.start();
-    for (int i = 0; i < ITERATION; i++) {
-      binarySearchY.push_back(binarySearchPoissonLog(lambda, std::nullopt));
-    }
-    timer.end();
-    std::cout << "Binary Search Method: " << timer.result() << "ms" << std::endl;
+  timer.start();
+   results = discreteEventSimulation(time,                // 120
+                                                        numberOfReplication, // 1000
+                                                        initalOccupancy,     // 10
+                                                        6,                   // lambda (bike arrival rate)
+                                                        3,                   // client1Rate (mu1)
+                                                        1,                   // client2Rate (mu2)
+                                                        4,                   // client3Rate (mu3)
+                                                        0.5,                 // client1Fee (K1)
+                                                        0.1,                 // client2Fee (K2)
+                                                        1.25,                // client3Fee (K3)
+                                                        1.0,                 // client1PenaltyRate (c1)
+                                                        0.25                 // client2PenaltyRate (c2)
+  );
 
-    // Expected Poisson Function
-    timer.start();
-    PoissonFunction func(lambda);
-    double index = std::min<double>(0, std::abs(lambda - 100));
-    double value = 0;
-    do {
-      value = func.runLog(index);
-      index += 1;
-      poissonX.push_back(index);
-      poissonY.push_back(exp(value));
-    } while (index < lambda + 100);
+  sum = std::accumulate(results.begin(), results.end(), 0.0);
+  mean = sum / numberOfReplication;
+  timer.end();
+  std::cout << "Estimated Net Profit: $" << mean << std::endl;
+  std::cout << "Time: " << timer.result()<< std::endl;
 
-    timer.end();
-    std::cout << "Expected Poisson: " << timer.result() << "ms" << std::endl;
-
-    createHistPlot(binarySearchY, BINS, "Random Number", "Occurances", "Poisson - Binary Search Method");
-    createHistPlot(transaformationY, BINS, "Random Number", "Occurances", "Poisson - Transformation Method");
-    createBarPlot(poissonX, poissonY);
-
-    binarySearchX.clear();
-    binarySearchY.clear();
-    transaformationX.clear();
-    transaformationY.clear();
-    poissonX.clear();
-    poissonY.clear();
-    nPlot = 1;
-  }
   return 0;
 }

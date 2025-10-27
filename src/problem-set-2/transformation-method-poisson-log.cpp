@@ -1,26 +1,25 @@
 #include "helper.h"
 
-double transformationMethodPoisson(double lambda, std::optional<double> randomValue) {
+double transformationMethodPoissonLog(double lambda, std::optional<double> randomValue) {
 
   double randomUniformNumber;
 
   if (randomValue.has_value()) {
     randomUniformNumber = randomValue.value();
   }
-
   else {
     randomUniformNumber = randomFloatGenerator(0, 1);
   }
 
-  double constantThreshold = exp(-lambda);
-  double p = 1.0;
-  double n = 1;
+  double threshold = -lambda;
+  double logP = log(randomUniformNumber);  
+  double n = 0;
 
-  while (p > constantThreshold) {
+  while (logP > threshold) {
     randomUniformNumber = randomFloatGenerator(0, 1);
-    p *= randomUniformNumber;
+    logP += log(randomUniformNumber);  
     n += 1;
   }
 
-  return n - 1;
+  return n;
 }
