@@ -1,5 +1,43 @@
 #include "helper.h"
 
+enum EventType {
+  arrival,
+  client1,
+  client2,
+  client3,
+};
+
+struct Events {
+  double arrival;
+  double client1;
+  double client2;
+  double client3;
+};
+struct EventResult {
+  double time;
+  EventType type;
+};
+
+EventResult findNextEvent(const Events &events) {
+  EventResult result;
+  result.time = events.arrival;
+  result.type = arrival;
+
+  if (events.client1 < result.time) {
+    result.time = events.client1;
+    result.type = EventType::client1;
+  }
+  if (events.client2 < result.time) {
+    result.time = events.client2;
+    result.type = EventType::client2;
+  }
+  if (events.client3 < result.time) {
+    result.time = events.client3;
+    result.type = EventType::client3;
+  }
+
+  return result;
+}
 int generateM(double lambda, double timeInterval) {
   double randomNumber = randomFloatGenerator(0, 1);
   return transformationMethodPoissonLog(lambda * timeInterval, randomNumber);
@@ -18,7 +56,7 @@ std::vector<double> retrospectiveSimulation(double timeInterval, double numberOf
 
   for (int i = 0; i < numberOfReplication; i++) {
     int M = generateM(lambdaTotal, timeInterval);
-  
+
     int occupancy = initalOccupancy;
     int client3Rides = 0;
     int client1Penalties = 0;
