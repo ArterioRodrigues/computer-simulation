@@ -84,23 +84,3 @@ double logSumExp(double logA, double logB) {
   }
 }
 
-EventResult findNextEvent(const Events &events) {
-  EventResult result;
-  result.time = events.arrival;
-  result.type = arrival;
-
-  if (events.client1 < result.time) {
-    result.time = events.client1;
-    result.type = EventType::client1;
-  }
-  if (events.client2 < result.time) {
-    result.time = events.client2;
-    result.type = EventType::client2;
-  }
-  if (events.client3 < result.time) {
-    result.time = events.client3;
-    result.type = EventType::client3;
-  }
-
-  return result;
-}

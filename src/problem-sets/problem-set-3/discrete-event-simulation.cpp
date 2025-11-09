@@ -1,5 +1,44 @@
 #include "helper.h"
 
+enum EventType {
+  arrival,
+  client1,
+  client2,
+  client3,
+};
+
+struct Events {
+  double arrival;
+  double client1;
+  double client2;
+  double client3;
+};
+struct EventResult {
+  double time;
+  EventType type;
+};
+
+EventResult findNextEvent(const Events &events) {
+  EventResult result;
+  result.time = events.arrival;
+  result.type = arrival;
+
+  if (events.client1 < result.time) {
+    result.time = events.client1;
+    result.type = EventType::client1;
+  }
+  if (events.client2 < result.time) {
+    result.time = events.client2;
+    result.type = EventType::client2;
+  }
+  if (events.client3 < result.time) {
+    result.time = events.client3;
+    result.type = EventType::client3;
+  }
+
+  return result;
+}
+
 std::vector<double> discreteEventSimulation(double timeInterval, double numberOfReplication, double initalOccupancy, double lambda,
                                             double client1Rate, double client2Rate, double client3Rate, float client1Fee,
                                             float client2Fee, float client3Fee, float client1PenaltyRate,

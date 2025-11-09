@@ -16,9 +16,8 @@ message(STATUS "Numpy include dir: ${NUMPY_INCLUDE_DIR}")
 add_executable(main 
   src/main.cpp 
   src/helper.cpp 
-  src/problem-set-2/transformation-method-poisson-log.cpp
-  src/problem-set-3/discrete-event-simulation.cpp
-  src/problem-set-3/retrospective-simulation.cpp
+  src/problem-sets/problem-set-2/transformation-method-poisson-log.cpp
+  src/chapters/queue-simulation.cpp
 )
 
 target_include_directories(main PRIVATE 
